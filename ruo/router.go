@@ -40,7 +40,6 @@ func parsePattern(pattern string) (parts []string) {
 
 // 添加路由
 func (r *router) addRoute(method string, pattern string, handler HandlerFunc) {
-	log.Printf("register route Method %s path %s", method, pattern)
 	//key := method + "-" + pattern
 	//r.handlers[key] = handler
 	parts := parsePattern(pattern)
@@ -86,6 +85,7 @@ func (r *router) getRoute(method string, path string) (*node, map[string]string)
 }
 
 // 实现 handle
+// 将从路由匹配得到的 Handler 添加到 c.handlers列表中，执行c.Next()。
 func (r *router) handle(c *Context) {
 	//key := c.Method + "-" + c.Path
 	//if handler, ok := r.handlers[key]; ok {
@@ -96,8 +96,11 @@ func (r *router) handle(c *Context) {
 	if n != nil {
 		c.Params = params
 		key := c.Method + "-" + n.pattern
-		r.handlers[key](c)
+		c.handlers = append(c.handlers, r.handlers[key])
 	} else {
-		c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
+		c.handlers = append(c.handlers, func(c *Context) {
+			c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
+		})
 	}
+	c.Next()
 }

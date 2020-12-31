@@ -23,6 +23,9 @@ type Context struct {
 
 	// 响应信息
 	StatusCode int
+	// 中间件
+	handlers []HandlerFunc
+	index    int
 }
 
 // 初始化上下文
@@ -32,6 +35,16 @@ func newContext(w http.ResponseWriter, req *http.Request) *Context {
 		Req:    req,
 		Path:   req.URL.Path,
 		Method: req.Method,
+		index:  -1,
+	}
+}
+
+// 处理中间件
+func (c *Context) Next() {
+	c.index++
+	s := len(c.handlers)
+	for ; c.index < s; c.index++ {
+		c.handlers[c.index](c)
 	}
 }
 
