@@ -8,7 +8,7 @@ import (
 type HandlerFunc func(c *Context)
 
 type RouterGroup struct {
-	preFix      string // 路由组前缀
+	prefix      string // 路由组前缀
 	middleWares []HandlerFunc
 	parent      *RouterGroup
 	engine      *Engine
@@ -42,18 +42,20 @@ func (group *RouterGroup) Group(prefix string) *RouterGroup {
 }
 
 // 添加路由
-func (engine *Engine) AddRoute(method string, pattern string, handler HandlerFunc) {
-	engine.router.addRoute(method, pattern, handler)
+func (group *RouterGroup) AddRoute(method string, pattern string, handler HandlerFunc) {
+	pattern = group.prefix + pattern
+	log.Printf("Route %4s - %s", method, pattern)
+	group.engine.router.addRoute(method, pattern, handler)
 }
 
 // 处理get请求
-func (engine *Engine) GET(pattern string, handler HandlerFunc) {
-	engine.AddRoute("GET", pattern, handler)
+func (group *RouterGroup) GET(pattern string, handler HandlerFunc) {
+	group.engine.AddRoute("GET", pattern, handler)
 }
 
 // 处理post请求
-func (engine *Engine) POST(pattern string, handler HandlerFunc) {
-	engine.AddRoute("POST", pattern, handler)
+func (group *RouterGroup) POST(pattern string, handler HandlerFunc) {
+	group.engine.AddRoute("POST", pattern, handler)
 }
 
 // 启动指定端口的http服务
