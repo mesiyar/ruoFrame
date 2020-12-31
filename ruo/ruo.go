@@ -33,7 +33,7 @@ func New() *Engine {
 func (group *RouterGroup) Group(prefix string) *RouterGroup {
 	engine := group.engine
 	newGroup := &RouterGroup{
-		preFix: group.preFix + prefix,
+		prefix: group.prefix + prefix,
 		engine: engine,
 		parent: group,
 	}
