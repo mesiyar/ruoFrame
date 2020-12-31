@@ -22,6 +22,21 @@ func main()  {
 			"password": c.PostForm("password"),
 		})
 	})
+
+	r.GET("/hello/:name", func(c *ruo.Context) {
+		// expect /hello/eddie
+		c.String(http.StatusOK, "hello %s, you're at %s\n", c.Param("name"), c.Path)
+	})
+
+	r.GET("/assets/*filepath", func(c *ruo.Context) {
+		c.Json(http.StatusOK, ruo.H{"filepath": c.Param("filepath")})
+	})
+
+	r.GET("/header", func(c *ruo.Context) {
+		h := c.GetHeader("token")
+		c.String(http.StatusOK, "token is %s", h)
+	})
+
 	r.Run(":9999")
 }
 

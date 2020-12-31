@@ -9,7 +9,7 @@ type HandlerFunc func(c *Context)
 
 // Engine 实现ServeHTTP接口
 type Engine struct {
-	router *router// 路由
+	router *router // 路由
 }
 
 // ruo.Engine 的构造器
@@ -19,7 +19,7 @@ func New() *Engine {
 
 // 添加路由
 func (engine *Engine) AddRoute(method string, pattern string, handler HandlerFunc) {
-	engine.router.AddRoute(method,pattern,handler)
+	engine.router.addRoute(method, pattern, handler)
 }
 
 // 处理get请求

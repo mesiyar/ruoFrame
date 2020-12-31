@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// 用于返回json格式的数据
 type H map[string]interface{}
 
 // 上下文结构体
@@ -17,6 +18,8 @@ type Context struct {
 	// 请求信息
 	Path   string
 	Method string
+
+	Params map[string]string
 
 	// 响应信息
 	StatusCode int
@@ -53,6 +56,11 @@ func (c *Context) SetHeader(key, value string) {
 	c.Writer.Header().Set(key, value)
 }
 
+// 获取header
+func (c *Context) GetHeader(key string) string {
+	return c.Req.Header.Get(key)
+}
+
 // 返回格式 string
 func (c *Context) String(code int, format string, values ...interface{}) {
 	c.SetHeader("Content-Type", "text/plain")
@@ -70,7 +78,6 @@ func (c *Context) Json(code int, obj interface{}) {
 	}
 }
 
-
 func (c *Context) Data(code int, data []byte) {
 	c.Status(code)
 	_, _ = c.Writer.Write(data)
@@ -81,4 +88,9 @@ func (c *Context) HTML(code int, html string) {
 	c.SetHeader("Content-Type", "text/html")
 	c.Status(code)
 	_, _ = c.Writer.Write([]byte(html))
+}
+
+func (c *Context) Param(key string) string {
+	s, _ := c.Params[key]
+	return s
 }
