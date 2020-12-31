@@ -30,6 +30,12 @@ func New() *Engine {
 	return engine
 }
 
+func Default() *Engine {
+	engine := New()
+	engine.Use(Logger(), Recovery())
+	return engine
+}
+
 // 路由分组
 func (group *RouterGroup) Group(prefix string) *RouterGroup {
 	engine := group.engine

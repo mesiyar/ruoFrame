@@ -107,3 +107,8 @@ func (c *Context) Param(key string) string {
 	s, _ := c.Params[key]
 	return s
 }
+
+func (c *Context) Fail(code int, err string) {
+	c.index = len(c.handlers)
+	c.Json(code, H{"message": err})
+}
