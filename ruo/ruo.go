@@ -7,14 +7,38 @@ import (
 
 type HandlerFunc func(c *Context)
 
+type RouterGroup struct {
+	preFix      string // 路由组前缀
+	middleWares []HandlerFunc
+	parent      *RouterGroup
+	engine      *Engine
+}
+
 // Engine 实现ServeHTTP接口
 type Engine struct {
+	*RouterGroup
 	router *router // 路由
+	groups []*RouterGroup
 }
 
 // ruo.Engine 的构造器
 func New() *Engine {
-	return &Engine{router: newRouter()}
+	engine := &Engine{router: newRouter()}
+	engine.RouterGroup = &RouterGroup{engine: engine}
+	engine.groups = []*RouterGroup{engine.RouterGroup}
+	return engine
+}
+
+// 路由分组
+func (group *RouterGroup) Group(prefix string) *RouterGroup {
+	engine := group.engine
+	newGroup := &RouterGroup{
+		preFix: group.preFix + prefix,
+		engine: engine,
+		parent: group,
+	}
+	engine.groups = append(engine.groups, newGroup)
+	return newGroup
 }
 
 // 添加路由
