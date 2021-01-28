@@ -1,3 +1,4 @@
+// 实现上下文相关逻辑
 package ruo
 
 import (
@@ -44,7 +45,7 @@ func (c *Context) Next() {
 	c.index++
 	s := len(c.handlers)
 	for ; c.index < s; c.index++ {
-		c.handlers[c.index](c)
+		c.handlers[c.index](c) // 执行下一个中间件
 	}
 }
 

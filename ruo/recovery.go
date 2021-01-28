@@ -23,7 +23,7 @@ func trace(message string) string  {
 	}
 	return str.String()
 }
-
+// 异常恢复
 func Recovery() HandlerFunc  {
 	return func(c *Context) {
 		defer func() {

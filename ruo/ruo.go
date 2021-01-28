@@ -10,7 +10,7 @@ type HandlerFunc func(c *Context)
 
 type RouterGroup struct {
 	prefix      string // 路由组前缀
-	middleWares []HandlerFunc
+	middleWares []HandlerFunc // 中间件
 	parent      *RouterGroup
 	engine      *Engine
 }
